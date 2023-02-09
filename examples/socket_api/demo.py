@@ -22,7 +22,7 @@ port = 7010
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((ip_address, port))
-s.listen(5)
+s.listen(1)
 
 
 def loop():
@@ -30,7 +30,7 @@ def loop():
         try:
             conn, addr = s.accept()
             hand = STATUS['hand']
-            conn.sendall(json.dumps(hand).encode())
+            conn.sendto(json.dumps(hand).encode(), addr)
         except Exception as e:
             pass
 
@@ -83,6 +83,9 @@ while True:
             'xyz_zone':numlist2xyz( hand.xyz_zone)
         }
         data['hands'].append(hand_dict)
+        if len(data['hands']) > 1:
+            break
+
     STATUS['hand'] = data
     # Draw hands
     frame = renderer.draw(frame, hands, bag)
